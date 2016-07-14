@@ -3,31 +3,50 @@
 import xml.etree.cElementTree as ET
 import curses
 import time,sys
+import random
 
-# def generateXML():
-# 	global lastLat, lastLng
-# 	geo = getPokemonLocation()
-# 	if geo != None:
-# 		if geo["lat"] != lastLat or geo["lng"] != lastLng:
-# 			lastLat = geo["lat"]
-# 			lastLng = geo["lng"]
-# 			gpx = ET.Element("gpx", version="1.1", creator="Xcode")
-# 			wpt = ET.SubElement(gpx, "wpt", lat=geo["lat"], lon=geo["lng"])
-# 			ET.SubElement(wpt, "name").text = "PokemonLocation"
-# 			ET.ElementTree(gpx).write("pokemonLocation.gpx")
-# 			print "Location Updated!", "latitude:", geo["lat"], "longitude:" ,geo["lng"]
+stdscr = curses.initscr()
+
+def pprint(*args):
+    for arg in args:
+        stdscr.addstr(str(arg) + ' ')
+    stdscr.addstr('\n')
+
+def gen(keyPressed):
+
+    STEP = 0.0001
+
+    root = ET.parse("pokemonLocation.gpx").getroot()
+    lat  = float(root[0].attrib['lat'])
+    lon  = float(root[0].attrib['lon'])
+
+    if keyPressed == 259: #up
+        lat += STEP
+    elif keyPressed == 258:   #down
+        lat -= STEP
+    elif keyPressed == 260:   #left
+        lon -= STEP
+    elif keyPressed == 261:   #right
+        lon += STEP
+
+    gpx = ET.Element("gpx", version="1.1", creator="Xcode")
+    wpt = ET.SubElement(gpx, "wpt", lat=str(lat), lon=str(lon))
+    ET.SubElement(wpt, "name").text = "PokemonLocation"
+    ET.ElementTree(gpx).write("pokemonLocation.gpx")
+    pprint (keyPressed, "latitude:", lat, "longitude:" ,lon)
 
 def main():
+    curses.noecho()
+    curses.cbreak()
+    stdscr.keypad(1)
+    while True:
+        keyPressed = stdscr.getch()
+        if keyPressed == ord('s'):
+            break
+        gen(keyPressed)
 
-	win = curses.initscr()
-	curses.cbreak()
-
-	while True:
-		print '>'
-	    keyPress = win.getch()
-	    #if key != -1:
-	    print sys.stdout.write('*'+str(keyPress)+'*\n')
+    curses.endwin()
 
 
 if __name__ == "__main__":
-	main()
+    main()
