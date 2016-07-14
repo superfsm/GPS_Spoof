@@ -33,7 +33,10 @@ def gen(keyPressed):
     wpt = ET.SubElement(gpx, "wpt", lat=str(lat), lon=str(lon))
     ET.SubElement(wpt, "name").text = "PokemonLocation"
     ET.ElementTree(gpx).write("pokemonLocation.gpx")
-    pprint (keyPressed, "latitude:", lat, "longitude:" ,lon)
+    try:
+        pprint (keyPressed, "latitude:", lat, "longitude:" ,lon)
+    except:
+        pass
 
 def main():
     curses.noecho()
