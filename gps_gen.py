@@ -8,6 +8,7 @@ import random
 stdscr = curses.initscr()
 
 def pprint(*args):
+    stdscr.erase()
     for arg in args:
         stdscr.addstr(str(arg) + ' ')
     stdscr.addstr('\n')
@@ -20,13 +21,13 @@ def gen(keyPressed):
     lat  = float(root[0].attrib['lat'])
     lon  = float(root[0].attrib['lon'])
 
-    if keyPressed == 259: #up
+    if keyPressed == 'KEY_UP':
         lat += STEP
-    elif keyPressed == 258:   #down
+    elif keyPressed == 'KEY_DOWN':
         lat -= STEP
-    elif keyPressed == 260:   #left
+    elif keyPressed == 'KEY_LEFT':
         lon -= STEP
-    elif keyPressed == 261:   #right
+    elif keyPressed == 'KEY_RIGHT':
         lon += STEP
 
     gpx = ET.Element("gpx", version="1.1", creator="Xcode")
@@ -34,7 +35,7 @@ def gen(keyPressed):
     ET.SubElement(wpt, "name").text = "PokemonLocation"
     ET.ElementTree(gpx).write("pokemonLocation.gpx")
     try:
-        pprint (keyPressed, "latitude:", lat, "longitude:" ,lon)
+        pprint ('{:9s}'.format(keyPressed), "latitude:", lat, "longitude:" ,lon)
     except:
         pass
 
@@ -43,8 +44,8 @@ def main():
     curses.cbreak()
     stdscr.keypad(1)
     while True:
-        keyPressed = stdscr.getch()
-        if keyPressed == ord('s'):
+        keyPressed = stdscr.getkey()
+        if keyPressed == 's':
             break
         gen(keyPressed)
 
