@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-import xml.etree.cElementTree as ET
+
 import curses
 import time,sys
 import random
+import xml.etree.cElementTree as ET
 
 stdscr = curses.initscr()
 
@@ -11,7 +12,9 @@ def pprint(*args):
     stdscr.erase()
     for arg in args:
         stdscr.addstr(str(arg) + ' ')
+        sys.stdout.write(str(arg) + ' ')
     stdscr.addstr('\n')
+    sys.stdout.write('\n')
 
 def gen(keyPressed):
 
